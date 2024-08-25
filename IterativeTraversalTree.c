@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the structure for a node in the binary tree
+// Definition of the Node structure
 typedef struct Node {
     int val;
     struct Node* left;
     struct Node* right;
 } Node;
 
-// Function to create a new tree node
+// Function to create a new node
 Node* createNode(int val) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->val = val;
@@ -17,77 +17,65 @@ Node* createNode(int val) {
     return newNode;
 }
 
-// Non-recursive preorder traversal using an array as a stack
-void preorderTraversal(Node* root) {
+// Function for pre-order traversal
+void preOrder(Node* root) {
     if (root == NULL) return;
-
-    // Define the maximum size of the stack (can be increased if needed)
-    int maxSize = 100;
-    Node* stack[maxSize];
-    int top = -1;
-
-    // Push the root node onto the stack
-    stack[++top] = root;
-
-    while (top >= 0) {
-        // Pop a node from the stack
-        Node* current = stack[top--];
-
-        // Process the current node
-        printf("%d ", current->val);
-
-        // Push right child first so that left child is processed first
-        if (current->right != NULL) {
-            stack[++top] = current->right;
-        }
-        if (current->left != NULL) {
-            stack[++top] = current->left;
-        }
-    }
+    printf("%d ", root->val);
+    preOrder(root->left);
+    preOrder(root->right);
 }
 
-void inorderTraversal(Node* root) {
+// Function for in-order traversal
+void inOrder(Node* root) {
     if (root == NULL) return;
-
-    // Define the maximum size of the stack (can be increased if needed)
-    int maxSize = 100;
-    Node* stack[maxSize];
-    int top = -1;
-    Node* current = root;
-
-    while (current != NULL || top >= 0) {
-        // Reach the leftmost node of the current node
-        while (current != NULL) {
-            stack[++top] = current;
-            current = current->left;
-        }
-
-        // Current must be NULL at this point
-        current = stack[top--];
-        printf("%d ", current->val);
-
-        // Visit the right subtree
-        current = current->right;
-    }
+    inOrder(root->left);
+    printf("%d ", root->val);
+    inOrder(root->right);
 }
 
-// Main function to test the traversal
+// Function for post-order traversal
+void postOrder(Node* root) {
+    if (root == NULL) return;
+    postOrder(root->left);
+    postOrder(root->right);
+    printf("%d ", root->val);
+}
+
+// Main function
 int main() {
-    // Creating a simple binary tree
-    Node* root = createNode(1);
-    root->left = createNode(2);
-    root->right = createNode(3);
-    root->left->left = createNode(4);
-    root->left->right = createNode(5);
-    root->right->left = createNode(6);
-    root->right->right = createNode(7);
+    // Creating nodes and constructing the binary tree
+    Node* root = createNode(5);
+    Node* a = createNode(3);
+    Node* b = createNode(7);
+    root->left = a;
+    root->right = b;
+    Node* c = createNode(2);
+    Node* d = createNode(4);
+    a->left = c;
+    a->right = d;
+    Node* e = createNode(6);
+    Node* f = createNode(8);
+    b->left = e;
+    b->right = f;
 
-    // Perform non-recursive preorder traversal
-    printf("Preorder Traversal: ");
-    preorderTraversal(root);
+    // Perform in-order traversal
+    inOrder(root);
     printf("\n");
 
-    // Free allocated memory (not shown for simplicity)
+    // Uncomment the lines below to perform pre-order and post-order traversals
+    // preOrder(root);
+    // printf("\n");
+    // postOrder(root);
+    // printf("\n");
+
+    // Deallocate memory to prevent memory leaks
+    free(f);
+    free(e);
+    free(d);
+    free(c);
+    free(b);
+    free(a);
+    free(root);
 
     return 0;
 }
